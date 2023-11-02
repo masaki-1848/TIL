@@ -104,7 +104,12 @@
      $ sudo ./install auto
      $ sudo service codedeploy-agent status
      ```
-  3. 
+  3. 管理者権限でログインし、サービスを再起動する
+     ```
+     sudo su -
+     systemctl restart codedeploy-agent
+     systemctl status codedeploy-agent
+     ```
   #### 【CodeDeployのロール作成】
   1. CodeDeployインスタンスへのエージェントのインストールと管理を可能にするインスタンスロールを作成する
      https://console.aws.amazon.com/iam/ で IAM コンソール を開く
