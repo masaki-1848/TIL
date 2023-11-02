@@ -29,6 +29,6 @@
     　下部にある「AWS CodeCommit の HTTPS Git 認証情報 」セクションより、認証情報を生成する
       ⇒　生成した認証情報をダウンロードして、git cloneコマンドを実行する際の認証情報を入力する
     - ③作成したリポジトリをローカルにgit cloneする
-      ※コマンド例：git clone https://git-codecommit.us-east-1.amazonaws.com/v1/repos/SampleAppRepo C:\workspace\aws\sample_app
+      ※コマンド例：git clone https://git-codecommit.us-east-1.amazonaws.com/SampleAppRepo C:\path\to\work\directory
       　上記②の手順でダウンロードした認証情報を使用する
     - 
