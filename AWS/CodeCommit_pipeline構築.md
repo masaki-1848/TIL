@@ -1,4 +1,6 @@
-# CodeCommitを用いたEC2のデプロイメント構築
+![image](https://github.com/masaki-1848/TIL/assets/63137407/e06159dd-95df-45d7-8823-87eb7720d872)# CodeCommitを用いたEC2のデプロイメント構築
+
+
  ## 【参考サイト】
        https://docs.aws.amazon.com/ja_jp/codepipeline/latest/userguide/tutorials-simple-codecommit.html
  ## 【手順】
@@ -162,5 +164,18 @@
        service codedeploy-agent start
        ```
        「The AWS CodeDeploy agent is running as PID XXXXX」と表示されればエージェントが正常に動いている。
+  2. ログを確認する
+     ```
+     view /var/log/aws/codedeploy-agent/codedeploy-agent.log
+     ```
+     ログを確認しても原因が分からない場合は、codedeploy-agentサービスの再起動およびEC2インスタンスを再起動を試してみる。
+     ```
+     sudo service codedeploy-agent restart
+     ```
+     下記のエラーメッセージが表示される場合は、EC2インスタンスに対してS3へのフルアクセスIAMロールを付与して様子を見る
+     ```
+     CodeDeploy agent was not able to receive the lifecycle event. Check the CodeDeploy agent logs on your host and make sure the agent is running and can connect to the CodeDeploy server.
+     ```
+  3. 
    ### 9. 
   
