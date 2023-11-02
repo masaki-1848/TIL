@@ -27,16 +27,20 @@
 　　⇒　社内のGitLabサーバの場合、アクセス制限を行っており、社内ネットワーク以外からのアクセスが禁止されている。
 
 ## CodeCommitを用いたEC2のデプロイメント構築
-　- 参考サイト
+　【参考サイト】
     https://docs.aws.amazon.com/ja_jp/codepipeline/latest/userguide/tutorials-simple-codecommit.html
-  - 【手順】
-    - ①CodeCommitにアクセスし、create Repositoryから新規リポジトリを作成する
+    
+  【手順】
+    ### 1.CodeCommitにアクセスし、create Repositoryから新規リポジトリを作成する
       ※リージョンは作業用リージョンに切り替えること
-    - ②Gitの認証情報を作成する
+      
+    ### 2.Gitの認証情報を作成する
       IAMのユーザ管理サービスから、git cloneする際に認証ユーザーを検索し、管理画面から「セキュリティ認証情報」タブを選択して、
     　下部にある「AWS CodeCommit の HTTPS Git 認証情報 」セクションより、認証情報を生成する
       ⇒　生成した認証情報をダウンロードして、git cloneコマンドを実行する際の認証情報を入力する
-    - ③作成したリポジトリをローカルにgit cloneする
+      
+    ### 3.作成したリポジトリをローカルにgit cloneする
       ※コマンド例：git clone https://git-codecommit.us-east-1.amazonaws.com/SampleAppRepo C:\path\to\work\directory
       　上記②の手順でダウンロードした認証情報を使用する
-    - 
+      
+    ### 4.
