@@ -27,10 +27,10 @@
 　　⇒　社内のGitLabサーバの場合、アクセス制限を行っており、社内ネットワーク以外からのアクセスが禁止されている。
 
 ## CodeCommitを用いたEC2のデプロイメント構築
-　【参考サイト】
+　-【参考サイト】
     https://docs.aws.amazon.com/ja_jp/codepipeline/latest/userguide/tutorials-simple-codecommit.html
     
-  【手順】
+  -【手順】
     ### 1.CodeCommitにアクセスし、create Repositoryから新規リポジトリを作成する
       ※リージョンは作業用リージョンに切り替えること
       
