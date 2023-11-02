@@ -39,7 +39,18 @@
   composer create-project laravel/laravel sample-app
   ```
   #### 5.gitにすべてのファイルをアップロードする
+  1. すべてのファイルをステージング
   ```
   git add -A
   ```
+  2. ファイルをコミットする
+  ```
+  git commit -m "Add sample application files"
+  ```
+  3. CodeCommitのリポジトリにローカルリポジトリからプッシュする
+  ```
+  git push
+  ```
+  ※上記を実行すると、CodeCommitのターゲットリポジトリの「main」ブランチにファイルが追加される
+  
   #### 6.
