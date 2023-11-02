@@ -1,5 +1,4 @@
-![image](https://github.com/masaki-1848/TIL/assets/63137407/e06159dd-95df-45d7-8823-87eb7720d872)# CodeCommitを用いたEC2のデプロイメント構築
-
+# CodeCommitを用いたEC2のデプロイメント構築
 
  ## 【参考サイト】
        https://docs.aws.amazon.com/ja_jp/codepipeline/latest/userguide/tutorials-simple-codecommit.html
