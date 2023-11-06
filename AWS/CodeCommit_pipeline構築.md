@@ -9,6 +9,19 @@
   IAMのユーザ管理サービスから、git cloneする際に認証ユーザーを検索し、管理画面から「セキュリティ認証情報」タブを選択して、
   下部にある「AWS CodeCommit の HTTPS Git 認証情報 」セクションより、認証情報を生成する
   ⇒　生成した認証情報をダウンロードして、git cloneコマンドを実行する際の認証情報を入力する
+
+   - http://aws.amazon.comにアクセスして、IAMのサービスを検索する
+   - 「ユーザー」を選択し、CodeCommitアクセス用に構成するIAMユーザを選択する
+   - 「ユーザ名」を「docker-cicd-role」として登録する
+   - 「許可オプション」から「ポリシーを直接アタッチする」を選択する
+   - 「許可ポリシー」から「AWSCodeCommitPowerUser」を選択する
+     ※FullAccess権限を付与してしまうとリポジトリの削除もできてしまう（ポリシーはドキュメントを見て良く確認すること）
+     ⇒　参考サイト：https://docs.aws.amazon.com/codecommit/latest/userguide/security-iam-awsmanpol.html
+   - 「ユーザーの作成」をクリックする
+   - 一覧に先程作成した「docker-cicd-role」が追加されていることを確認する
+   - ユーザーの詳細ページから、「セキュリティ認証情報タブ」を選択し、「AWS CodeCommit の HTTPS Git 認証情報」から認証情報を生成をクリックする
+     ⇒　認証情報をダウンロードしておくこと
+  
   ### 3.作成したリポジトリをローカルにgit cloneする
   コマンド例
   ```
