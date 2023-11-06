@@ -88,7 +88,7 @@
   3. [ロールの作成] を選択する
   4. [信頼できるエンティティのタイプを選択] より「AWSのサービス」を選択する
   5. [ユースケース] より「EC2」を選択し、[次へ] を選択する 
-  6. 【AmazonEC2RoleforAWSCodeDeploy】と【AmazonEC2RoleforAWSCodeDeploy】ポリシーを選択し、[次へ] を選択する
+  6. 【AmazonEC2RoleforAWSCodeDeploy】と【AmazonSSMManagedInstanceCore】ポリシーを選択し、[次へ] を選択する
   7. [ロール名] を「sample-app-ec2-role」を入力し、作成する
   #### 【インスタンス作成】
   1. https://console.aws.amazon.com/ec2/でAmazon EC2 コンソールを開く
