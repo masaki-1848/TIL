@@ -286,4 +286,10 @@
      CodeDeploy agent was not able to receive the lifecycle event. Check the CodeDeploy agent logs on your host and make sure the agent is running and can connect to the CodeDeploy server.
      ```
 
+  ### その他：残タスク
+  - CodeCommitからのpushをトリガーとしてpipelineを実行する方法
+  - クラウド上にアップロードさせたくない変数情報（laravelの「.env」ファイルなど）の運用方法
+  - Deploy時にミドルウェアのインストールも含めて実行する方法
+  - Deploy時にEC2インスタンスを新規で起動する方法
+  - Deploy時にDockerコンテナを起動させてソースをデプロイする方法
   
