@@ -216,6 +216,19 @@
    ```
    systemctl status httpd
    ```
+   #### 8-3.Composer
+   下記コマンドによりインストールする
+   ```
+   curl -sS https://getcomposer.org/installer | php
+   ```
+   Composerが実行可能か確認する
+   ```
+   php composer.phar
+   ```
+   Pathを通してどこからでも実行可能にする
+   ```
+   mv composer.phar /usr/local/bin/composer
+   ```
 
   ### 9. appspec.ymlファイルを作成する
   CodeDeployでは、デプロイ先や事前／事後処理の定義をappspec.ymlというファイルに指定する必要があり、  
