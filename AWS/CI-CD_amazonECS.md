@@ -18,10 +18,21 @@
   1. AWSのコンソールからCloudFormationを開く
   2. [スタックの作成]を選択する
   3. [テンプレートの準備]より「テンプレートの準備完了」を選択し、「テンプレートファイルのアップロード」を選択して任意のファイルをアップロードする
-     ※cloudFormationを実行するためのymlファイルには、主に①AWSTemplateFormatVersion、②Description、③Mappings、④Parameters、⑤Resourcesの５項目について記載する  
-     　記載内容の詳細については、別記事で記載する
-     　ちなみに、Windowsのメモ帳アプリでyamlファイルを作成すると改行コードが「CR（キャリッジリターン）+LF（ラインフィード）」となるため、
-     　CloudFormationに取り込むとエラーが発生する（Linux形式（LF）にする必要がある！！）
+     ※cloudFormationを実行するためのymlファイルには、主に
+     - ①AWSTemplateFormatVersion
+     - ②Description
+     - ③Mappings
+     - ④Parameters
+     - ⑤Resources
+     の５項目について記載する  
+
+     > 注意点
+     - Windowsのメモ帳アプリでyamlファイルを作成すると改行コードが「CR（キャリッジリターン）+LF（ラインフィード）」  
+     　となるため、CloudFormationに取り込むとエラーが発生する（Linux形式（LF）にする必要がある！！）
+     - スカラー値（key:value）と（key: value）では意味が異なる！
+       
+     　きれいなCloudFormationファイルの書き方は下記のサイトを参考にする
+     > https://qiita.com/yes_dog/items/1d35b93278cc1f93d3c4
   4. 
   
   
