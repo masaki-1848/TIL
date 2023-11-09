@@ -338,7 +338,7 @@
   12. パイプラインを実行する
   13. pipelineの動作を検証する
 
-  #### 【余談：Blue/GreenとIn-Placeデプロイメントについて】
+  #### 【余談1：Blue/GreenとIn-Placeデプロイメントについて】
   - Blue/Green
   > 現状の本番環境（Blue）とは別に新しい本番環境（Green）を構築したうえで、ロードバランサーの接続先を切り替えるなどを行い、  
     新しい本番環境をリリースするデプロイメント方法
@@ -346,6 +346,17 @@
   - In-Place
   > 現在稼働中のサービス実行環境に対し、アプリケーションのみを入れ替えるデプロイ方法
     一定台数ずつ順番にデプロイしている方式をローリングという。
+
+  #### 【余談2:Pipelineのエラー（CodeBuild）】
+  - 基本的に原因は「buildspec.yml」ファイルの記述内容に問題がある
+  - CodeBuildでdefaultで利用可能な環境変数は下記のサイトを参照
+  https://docs.aws.amazon.com/ja_jp/codebuild/latest/userguide/build-env-ref-env-vars.html
+  暗号化させたい変数はSystems managerで管理する方法もありかと
+
+  #### 【余談3:Pipelineのエラー（CodeDeploy）】
+  - taskdef.ymlのキーの「tags:[]」だとエラーになるので、tagsそのものを削除してしまう
+  - 「appspec.ymlファイルが存在しない」と怒られるときは、「buildspec.yml」のartifactsセクションに「- appspec.yml」を追記すると解消する
+  - テンプレートがパースできないというエラーメッセージが出るときは、「appspec.yml」の構文が誤っている可能性が高い
 
   ### 4. 後片付け
   #### 【操作手順】
