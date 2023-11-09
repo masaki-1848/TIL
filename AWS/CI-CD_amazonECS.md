@@ -11,7 +11,8 @@
 
 
   ## 操作手順
-  > ### 1.ECS環境の構築
+  
+  ### 1.ECS環境の構築
   #### 【VPCを作成する】
   CloudFormationを使用し、VPC、InternetGateway、NATgateway、subnet、routetableは一括で作成する  
   ##### 【CloudFormation実行手順】
@@ -142,13 +143,13 @@
   
   #### 【ECRにDockerイメージをpushする】
   ##### 【操作手順】
-  1. ECRにログインする
+  1. Cloud9 IDEのコンソールからECRにログインする
   > 【ECR（Elastic Container Registry）のリポジトリを作成する】の手順５でメモしたコマンドを使用すること！
   - ログイン
   ```
   aws ecr get-login-password --region ～～
   ```
-  
+  ※「Login Succeeded」が表示されることを確認する
   - タグ付け
   ```
   docker tag repositry_name:latest ○○.dkr.ecr.region_name.amazonaws.com/repository_name:latest
@@ -158,5 +159,213 @@
   ```
   docker push ○○.dkr.ecr.region_name.amazonaws.com/repositry_name:latest
   ```
+  2. サービスから[Elastic Container Registry]を開く
+  3. サイドメニューから「repositry」を選択し、先ほどpushしたイメージが存在することを確認する
 
+  ### 2.AWS Fargate環境の構築
+  #### 【IAMロールの設定】
+  ##### 【操作手順】
+  1. サービスから「IAM」を選択する
+  2. サイドメニューから「ロール」を選択し、ロールを作成をクリックする
+  3. [信頼されたエンティティタイプ]から「AWSのサービス」を選択
+  4. [ユースケース]から「CodeDeploy」、「CodeDeploy ECS」を選択して次へを選択する
+  5. [ポリシー名]に「AWSCodeDeployRoleForECS」ポリシーが表⽰されていることを確認し次へ
+  6. [ロール名]に「CodeDeployRoleForECS」を入力してロールを作成する
+
+  #### 【Fargateクラスターを作成する】
+  ##### 【操作手順】
+  1. サービスから「Elastic Container Service」を選択する
+  2. サイドメニューから「クラスター」を選択し、クラスターの作成をクリックする
+  3. [クラスター名]に「fargate-cluster」を入力する
+  4. [インフラストラクチャ]として「AWS Fargate (サーバーレス)」を選択し、作成する
+  5. サイドメニューから「タスク定義」を選択し、「新しいタスク定義の作成」をクリックする
+  6. [タスク定義ファミリー]の名称を「docker-sample-fargate」とする
+  7. [タスクロール]は未選択とする
+  8. メモリとCPUは「0.5GB/0.25vCPU」とする
+  9. コンテナセクションの[名前]は「docker-sample-fargate」とし、リポジトリURIは作成したリポジトリのURLを指定する
+  10. コンテナのメモリは[ソフト]が「0.128」、[ハード]が「0.256」で設定を行う
+
+  #### 【Fargateのサービスを作成する】
+  ##### 【操作手順】
+  1. サービスから「Elastic Container Service」を選択する
+  2. サイドメニューから「タスクの定義」をクリックする
+  3. 先程作成したタスク定義を選択する
+  4. [デプロイ]から「サービスの作成」をクリックする
+  5. [既存のクラスター]から「fargate-cluster」を選択する
+  6. [サービス名]は「docker-fargate」とする
+  7. [ネットワーキング]のセクションからVPCは「docker-app-vpc」、サブネットは「private-subnet1,2」、セキュリティグループは「default」を選択する
+  8. [ロードバランシング]のセクションから「Application Load Valancer」、「既存のロードバランサー」、「docker-app-lb-01」を選択する
+  9. [ターゲットグループ]を新規作成し、名称を「docker-app-tgt-group1」「docker-app-tgt-group2」とする
+  10. [ヘルスチェックパス]を「/index.php」とする
+  ```
+  デプロイの設定を「Blue/Green」にしないと、パイプラインを作成する際にエラーが発生するので注意すること！！
+  ```
+  11. 作成をクリックする
+  12. サービスから「EC2」を選択する
+  13. サイドメニューから「ターゲットグループ」を選択する
+  14. 先程作成したターゲットグループ「docker-app-tgt-group」を選択し、「ターゲット」タブに表示されているタスクがHealthyになっていることを確認する
+  15. ALBのエンドポイントにアクセスし、アプリケーションのページが表示されることを確認する
+      EC2のサービスから、サイドメニューの「ロードバランサー」を選択し、詳細画面の「DNS名」を使用する
+
+  #### 【CI/CDパイプラインを実現する】
+  ##### 【使用するAWSサービス】
+  1. CodeCommit
+  - ソースコードのバージョン管理に使用する
+  ```
+  - セキュアかつスケーラブルなGit互換のリポジトリサービス
+  - スタンダードなGit Toolからアクセスが可能
+  - PushなどのイベントをトリガーにSNS/Lambdaを呼び出し可能
+  ```
+  2. CodeBuild
+  - ビルドの自動化に用いる
+  ```
+  - スケーラビリティに優れたビルドサービス
+  - ソースのコンパイル、テスト、パッケージ生成をサポート
+  - Dockerイメージの作成も可能
+  ```
+  3. CodeDeploy
+  - デプロイの自動化に用いる
+  ```
+  - S3またはGitHub上のコードをあらゆるインスタンスにデプロイする
+  - デプロイを安全に実行するための様々な機能を提供している
+  - In-Place（ローリング）およびBlue/Greenのデプロイをサポート
+  ```
+  4. CodePipeline
+  - ワークフローを管理する
+  ```
+  - リリースプロセスのモデル化と見える化を実現
+  - カスタムアクションによる柔軟なパイプラインの生成が可能
+  - 様々なAWSサービスや3rdパーティ製品との統合をサポート
+  ```
+
+  ### 3.AWS Code Servicesを利用したCI/CDパイプラインの構築
+  #### 【パイプラインの概要】
+  1. ローカルで各developerがgit pushしてリポジトリを更新
+  2. CodeCommitへのpushをCodePipelineが検出し、パイプラインを開始
+  3. CodeBuildがDockerイメージをビルドし、Elastic Container Registryへプッシュ
+  4. CodeDeployがElastic Container RegistryのDockerイメージをElastic Container ServicesクラスタにBlue/Greenデプロイメント
+
+  #### 【操作手順】
+  ##### 【CodeCommitのリポジトリをクローンする】
+  1. サービスから「CodeCommit」を選択する
+  2. サイドメニューのリポジトリを選択し、「リポジトリの作成」をクリックする
+  3. [リポジトリ名]を「docker-cicd-repo」とする
+  4. [説明]に「repositry for docker ci/cd structure 」と記載する
+  5. 作成する
+  6. サービスから「Cloud9」を選択する
+  7. 作成したCloud9の環境を選択し、IDEを起動する
+  8. ターミナルにhttpsによるgit cloneコマンドを実行する
+  ```
+  $ git clone https://git-codecommit.us-east-1.amazonaws.com/v1/repos/repositry_name
+  ```
+  9. リポジトリフォルダ直下に下記のファイルを格納する
+  - Dockerfile
+  - buildspec.yml
+  - appspec.yml
+  - taskdef.json※
+  - src/index.php
+  10. リポジトリにpushする
+  ```
+  $ cd repositry_name
+  $ git add -A
+  $ git commit -m "my first commit"
+  $ git push origin master
+  ```
+  11. CodeCommitから該当のリポジトリにソースがpushされていることを確認する
+
+  ##### 【アプリケーションを作成する】
+  1. サービスから「CodeDeploy」を選択する
+  2. サイドメニューの「デプロイ > アプリケーション」を選択し、アプリケーションの作成をクリックする
+  3. [アプリケーション名]は「AppECS-fargate-cluster-docker-sample-fargate」とする
+  4. [コンピューティングプラットフォーム]は「Amazon ECS」とする
+  5. アプリケーションを作成する
+  6. デプロイグループの作成をクリックする
+  7. [デプロイグループ名]を「DgpECS-fargate-docker-sample-fargate」とする
+  8. [サービスロール]は「CodeDeployRoleForECS」とする
+  9. [ECSのクラスター名]は「fargate-cluster」とする
+  10. [ECSのサービス名]は「docker-fargate」とする
+  11. [Load Balancer]は、「docker-app-lb-01」とする
+  12. 
+
+  ##### 【パイプライン作成】
+  1. サービスから「CodePipeline」を選択する
+  2. サイドメニューの「パイプライン」を選択し、パイプラインの作成をクリックする
+  3. [パイプライン名]は「docker-app-pipeline」とする
+  4. [サービスロール]は新規作成を選択し、次へを選択する
+  5. [ソースプロバイダー]から「CodeCommit」、リポジトリは「docker-cicd-repo」、ブランチは「master」を選択し、次へ
+  6. ビルドステージの[プロバイダーを構築する]から、「CodeBuild」を選択
+  7. [リージョン]は作業中のリージョンを選択し、プロジェクトを作成するをクリックする
+  8. [プロジェクト名]を「docker-cicd-build」とする
+  9. 環境のセクションは下記の設定とする
+  - [環境イメージ] => [マネージド型イメージ]
+  - [コンピューティング] => [EC2]
+  - [オペレーティングシステム] => [Ubuntu]
+  - [ランタイム] => [Standard]
+  - [イメージ] => [aws/codebuild/standard:7.0]
+  - [イメージのバージョン] => [最新のイメージ]
+  - [特権付与] => [有効]
+  - [ロール名] => [codebuild-build_name-service-role]
+  10. CodePipelineに進むを選択する
+  11. デプロイステージにて[デプロイプロバイダー]より「Amazon ECS(Blue/Green)」を選択する
+  12. [クラスター名]は「fargate-cluster」を選択
+  13. [リージョン]は作業用のリージョンを選択
+  14. [AWS CodeDeploy アプリケーション名]は、ECSでサービスを登録すると自動的に生成されるアプリケーション名を指定する
+  15. [AWS CodeDeploy デプロイグループ]も同様
+  16. [Amazon ECS タスク定義]と[AWS CodeDeploy AppSpec ファイル]は「BuildArtifact」を選択する
+  17. パイプラインを作成する
+
+  #### 【CodeBuildのIAMロールを編集する】
+  1. サービスから「IAM」を選択する
+  2. サイドメニューの「ロール」を選択し、検索欄に「CodeBuild」を入力して、表示される「codebuild-build_name-service-role」を選択する
+  3. [許可]タブの「許可を追加」メニューから「ポリシーのアタッチ」を選択する
+  4. 検索欄に「Container」を入力し、「AmazonEC2ContainerRegistryPowerUser」をアタッチする
+
+  #### 【CondePipelineの設定編集】
+  1. サービスから「CodePipeline」を開く
+  2. 先程作成した「docker-app-pipeline」を選択する
+  3. 「編集する」ボタンをクリックする
+  4. 「Deploy」ステージを編集する
+  5. [入力アーティファクト]の「追加」をクリックし、「SoucrArtifact」を追加する
+  6. [Amazon ECS タスク定義]と[AWS CodeDeploy AppSpec ファイル]を「SourceArtifact」に変更する
+  7. [タスク定義の動的な更新イメージ - オプショナル]の「入力アーティファクトを持つイメージの詳細」を「BuildArticact」、「タスク定義のプレースホルダー文字」を「IMAGE1_NAME」とする
+  8. 完了ボタンをクリックする
+  9. サービスから「CodeDeploy」を開く
+  10. サイドメニューの「アプリケーション」を開き、「AppECS-fargate-cluster-docker-fargate-01」を選択して、デプロイグループを編集する
+  11. [デプロイ設定]セクションの時間を「0」分を「5」に変更する
+  12. パイプラインを実行する
+  13. pipelineの動作を検証する
+
+  ※taskdef.jsonは、サービスから「ECS」を選択し、サイドメニューの[タスク定義]からFargateを選択し、最新のRivisionに表示されているJsonタブの内容をコピーする
   
+  #### 【余談：Blue/GreenとIn-Placeデプロイメントについて】
+  - Blue/Green
+  > 現状の本番環境（Blue）とは別に新しい本番環境（Green）を構築したうえで、ロードバランサーの接続先を切り替えるなどを行い、  
+    新しい本番環境をリリースするデプロイメント方法
+
+  - In-Place
+  > 現在稼働中のサービス実行環境に対し、アプリケーションのみを入れ替えるデプロイ方法
+    一定台数ずつ順番にデプロイしている方式をローリングという。
+
+  ### 4. 後片付け
+  #### 【操作手順】
+  1. CodePipelineを削除する
+  2. CodeDeployを削除する
+  3. CodeBuildを削除する
+  4. CodeCommitを削除する
+  5. S3 Bucketを削除する
+  6. ECRを削除する
+  7. ECS タスク定義を削除する
+  8. ECS クラスターを削除する
+  9. ALBを削除する
+  10. ALBターゲットグループを削除する
+  11. Cloud9を削除する
+  12. CloudFormationを削除する
+  13. IAMロールを削除する
+  ```
+  対象は４種類
+  - cwe-role-us-east-1-docker-app-pipeline
+  - AWSCodePipelineServiceRole-us-east-1-docker-app-pipeline
+  - CodeDeployRoleforECS
+  - codebuild-docker-app-build-service-role
+  ```
+  14. CloudWatch Logsを削除する
