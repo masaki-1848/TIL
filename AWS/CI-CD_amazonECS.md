@@ -260,10 +260,14 @@
   ```
   9. リポジトリフォルダ直下に下記のファイルを格納する
   - Dockerfile
-  - buildspec.yml
+  - buildspec.yml (※1)
   - appspec.yml
-  - taskdef.json※
-  - src/index.php
+  - taskdef.json (※2)
+  - src/index.php  
+  ※1 buildspec.ymlのpre_buildセクションに記載するコマンドは【ECR（Elastic Container Registry）のリポジトリを作成する】の手順５で取得したコマンドを使用すること  
+  ※2 taskdef.jsonは、サービスから「ECS」を選択し、サイドメニューの[タスク定義]からFargateを選択し、最新のRivisionに表示されているJsonタブの内容をコピーする
+  
+
   10. リポジトリにpushする
   ```
   $ cd repositry_name
@@ -285,7 +289,6 @@
   9. [ECSのクラスター名]は「fargate-cluster」とする
   10. [ECSのサービス名]は「docker-fargate」とする
   11. [Load Balancer]は、「docker-app-lb-01」とする
-  12. 
 
   ##### 【パイプライン作成】
   1. サービスから「CodePipeline」を選択する
@@ -335,8 +338,6 @@
   12. パイプラインを実行する
   13. pipelineの動作を検証する
 
-  ※taskdef.jsonは、サービスから「ECS」を選択し、サイドメニューの[タスク定義]からFargateを選択し、最新のRivisionに表示されているJsonタブの内容をコピーする
-  
   #### 【余談：Blue/GreenとIn-Placeデプロイメントについて】
   - Blue/Green
   > 現状の本番環境（Blue）とは別に新しい本番環境（Green）を構築したうえで、ロードバランサーの接続先を切り替えるなどを行い、  
