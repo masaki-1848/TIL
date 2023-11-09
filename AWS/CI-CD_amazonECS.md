@@ -133,6 +133,30 @@
   ```
   $ docker run --rm -p 8080:80 -d repositry_name:latest
   ```
-
+  5. cloud9 IDEの[Preview]タブから「Preview Running Application」を選択する
+  6. index.phpの内容が表示されることを確認する
+  7. docker containerを停止する
+  ```
+  $ docker stop container_id
+  ```
   
+  #### 【ECRにDockerイメージをpushする】
+  ##### 【操作手順】
+  1. ECRにログインする
+  > 【ECR（Elastic Container Registry）のリポジトリを作成する】の手順５でメモしたコマンドを使用すること！
+  - ログイン
+  ```
+  aws ecr get-login-password --region ～～
+  ```
+  
+  - タグ付け
+  ```
+  docker tag repositry_name:latest ○○.dkr.ecr.region_name.amazonaws.com/repository_name:latest
+  ```
+
+  - イメージのpush
+  ```
+  docker push ○○.dkr.ecr.region_name.amazonaws.com/repositry_name:latest
+  ```
+
   
