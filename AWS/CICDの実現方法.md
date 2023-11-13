@@ -1,5 +1,10 @@
 # AWSのサービスを用いたCI/CD実現の最小構成について調べてみた
 
+■ 参考サイト
+```
+https://zenn.dev/alichan/articles/fce0f352402a6d
+```
+
 ## 代表的なAWSサービスを用いたCI/CDの流れ
 
   1. CodeCommit上のリポジトリにローカルリポジトリの変更をpushする
