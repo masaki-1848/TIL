@@ -157,5 +157,12 @@
   44. [サービス名]から「docker-cicd-app-service」を選択する
   45. [次に]をクリックする
   46. [パイプラインを作成する]をクリックする
-  47. 
+  47. CodeBuildに付与されているロールに対して、ECRへのアクセス権限とSSMへの読み取り権限を付与する
+      - AmazonEC2ContainerRegistryPowerUser
+      - AmazonSSMReadOnlyAccess
+  49. サービスから[CodeBuild]を開き、詳細ページからロールを確認する
+  50. [許可を追加]から「ポリシーをアタッチ」を選択し、「AmazonEC2ContainerRegistryPowerUser」「AmazonSSMReadOnlyAccess」ポリシーを追加する
+  51. サービスから[ECS]を開き、[クラスター]からサービスを開き、サービスを更新ボタンを押下する
+  52. [必要なタスク]を「1」に修正し、更新ボタンを押下する
+  53. 
       
