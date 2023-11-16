@@ -393,7 +393,9 @@
   ```
 
   ■ Slackの場合の参考サイト
-
+  ```
+  https://dev.classmethod.jp/articles/notify-codepipeline-events-to-slack/
+  ```
 
 ## パターン2. GitHub ActionsによるCI/CD構築
 ### 1. 
