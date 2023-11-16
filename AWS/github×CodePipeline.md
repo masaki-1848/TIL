@@ -296,6 +296,7 @@
         - REPOSITORY_URI=[リポジトリURI]
         - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
         - IMAGE_TAG=${COMMIT_HASH:=latest}
+        - CONTAINER_NAME="php-apache"
     build:
       commands:
         - docker build -t $REPOSITORY_URI:latest .
@@ -304,10 +305,25 @@
       commands:
         - docker push $REPOSITORY_URI:latest
         - docker push $REPOSITORY_URI:$IMAGE_TAG
-        - printf '[{"name":"next-container-task","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+        - printf '{"name":"%s","imageUri":"%s"}' "$CONTAINER_NAME" "$REPOSITORY_URI:$IMAGE_TAG" > imagedefinitions.json   （※１）
   artifacts:
     files: imagedefinitions.json
   ```
+  ※１：imagedefinitions.jsonファイルを出力するコマンドの書き方はAWS公式を参照すること！
+  https://docs.aws.amazon.com/ja_jp/codepipeline/latest/userguide/ecs-cd-pipeline.html
+
+  【変数の記載内容】
+  - CONTAINER_NAME：ECSのタスク定義のサービスに記載しているJSONのContainerの名称
+  - REPOSITORY_URI：Amazon ECRリポジトリURI
+
+  ======重要！======  
+  AWSの公式にも記載がある通り、Amazon ECSによるデプロイメントを行う際は、
+  イメージを定義するJSONファイルとして「imagedefinitions.json」が必要となる。
+  ```
+  https://docs.aws.amazon.com/codepipeline/latest/userguide/file-reference.html
+  ```
+  buildspec.ymlのpost_buildセクションに、以下の記述を追加すること！！！
+  - printf '[{"name":"next-container-task","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
 
 #### 7. Dockerfileを作成する
   今回はphpとApacheの実行環境が構築できるDockerの公式イメージを使用する
@@ -333,22 +349,23 @@
   7. [接続名]を「github-repo」とする
   8. [Authorize]すると「新しいアプリをインストールする」ボタンが表示されるのでクリックする
   9. 目的のリポジトリのみを選択してinstallする
-  10. 接続をクリックする
-  11. [リポジトリ名]は「docker-cicd-pipeline」、[ブランチ名]は「master」を選択する
-  12. [パイプライントリガー]は「ブランチにプッシュイン」を選択する
-  13. [ビルドステージを追加する]のセクションにて[ソースプロバイダー]より「AWS CodeBuild」を選択する
-  14. [プロジェクトを作成する]をクリックする
-  15. [プロジェクト名]は「github-cicd-project」とする
-  16. [環境イメージ]は「マネージド型」、[コンピューティング]は「EC2」、[OS]は「Amazon Linux」を選択する
-  17. [ランタイム]は「Standard」、[イメージ]は「aws/codebuild/amazonlinux2-aarch64-standard:3.0」を選択する
-  18. [特権付与]にチェックを入れて、[イメージのバージョン]は最新を選択する
-  19. [ログ]セクションの[CloudWatch]のチェックは外す
-  20. [CodePipelineに進む]をクリックする
-  21. [次に]をクリックする
-  22. [デプロイステージを追加する]のセクションにて[ソースプロバイダー]より「Amazon ECS」を選択する
-  23. [クラスター名]は「github-cicd-cluster」、[サービス名]は「docker-cicd-app-service」を選択する
-  24. [次に]をクリックする
-  25. [パイプラインを作成する]をクリックする
+     ※このときに誤ったリポジトリ名を指定しないように注意すること！
+  11. 接続をクリックする
+  12. [リポジトリ名]は「docker-cicd-pipeline」、[ブランチ名]は「master」を選択する
+  13. [パイプライントリガー]は「ブランチにプッシュイン」を選択する
+  14. [ビルドステージを追加する]のセクションにて[ソースプロバイダー]より「AWS CodeBuild」を選択する
+  15. [プロジェクトを作成する]をクリックする
+  16. [プロジェクト名]は「github-cicd-project」とする
+  17. [環境イメージ]は「マネージド型」、[コンピューティング]は「EC2」、[OS]は「Amazon Linux」を選択する
+  18. [ランタイム]は「Standard」、[イメージ]は「aws/codebuild/amazonlinux2-aarch64-standard:3.0」を選択する
+  19. [特権付与]にチェックを入れて、[イメージのバージョン]は最新を選択する
+  20. [ログ]セクションの[CloudWatch]のチェックは外す
+  21. [CodePipelineに進む]をクリックする
+  22. [次に]をクリックする
+  23. [デプロイステージを追加する]のセクションにて[ソースプロバイダー]より「Amazon ECS」を選択する
+  24. [クラスター名]は「github-cicd-cluster」、[サービス名]は「docker-cicd-app-service」を選択する
+  25. [次に]をクリックする
+  26. [パイプラインを作成する]をクリックする
 
   ※上記完了後、パイプラインが実行されるが、おそらくcodebuildのセクションでエラーが発生する（権限の問題）
 
@@ -370,7 +387,13 @@
   6. 各ステージが問題なく「success」になることを確認する
 
 #### 12. おまけ：パイプラインの実行通知をslackに送る
-  1. 
+  ■ Teamsに通知する場合の参考サイト
+  ```
+  https://zuntan02.hateblo.jp/entry/2021/04/19/143523
+  ```
+
+  ■ Slackの場合の参考サイト
+
 
 ## パターン2. GitHub ActionsによるCI/CD構築
 ### 1. 
