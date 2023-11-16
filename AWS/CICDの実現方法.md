@@ -86,8 +86,8 @@ https://zenn.dev/alichan/articles/fce0f352402a6d
               "essential": true
           }
       ],
-      "taskRoleArn": "arn:aws:iam::989959965747:role/DockerCiCdECSRole",
-      "executionRoleArn": "arn:aws:iam::989959965747:role/DockerCiCdECSRole",
+      "taskRoleArn": "arn:aws:iam::AWS_ACCESS_KEY_ID:role/DockerCiCdECSRole",
+      "executionRoleArn": "arn:aws:iam::AWS_ACCESS_KEY_ID:role/DockerCiCdECSRole",
       "networkMode": "awsvpc",
       "memory": "3 GB",
       "cpu": "1 vCPU",
