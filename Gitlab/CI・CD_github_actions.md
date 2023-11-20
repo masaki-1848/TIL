@@ -293,13 +293,7 @@
      7-5. ビルドしたイメージを動的にタスク定義に紐づけるため、imageに環境変数を指定する
 
   8. 試しにgit pushしてみる
-     - ecsのタスクを実行するiamロール「githubActionsExeRole」の詳細を確認する
-       - [信頼関係]タブを選択する
-         - 以下の記述がある場合は削除する
-           ```
-           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-           ```
-         - 
+     - 
 
 
   
