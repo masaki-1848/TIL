@@ -1,4 +1,4 @@
-# LaravelでWebアプリケーションを作ってみる
+![image](https://github.com/masaki-1848/TIL/assets/63137407/6a1ca63c-2406-4516-a756-4d057c878bfb)# LaravelでWebアプリケーションを作ってみる
 ## 【目的】
   - 社内的にレガシーフレームワークを刷新したいという声が上がっており、
     スクリプト言語をそもそも継続するべきなのかという問題はあるものの
@@ -73,4 +73,73 @@ composer create-project laravel/laravel sample_app
     php artisan migrate:fresh
     ```
 
-  
+### 4. モデルを作成する
+  - モデルはテーブルとマッピングされたオブジェクトであり、DB操作を行うためのクラス
+  - 下記のコマンドを実行してモデルファイルを作成する
+    ```
+    php artisan make:model Table_name
+    ```
+    ※Modelの名称は頭文字を大文字として、テーブル名と対応する単数形（Sを付けない）名称とする
+  - 作成したモデルは「apps/Models」ディレクトリ直下に作成される
+  - モデルは命名規則によってテーブルとマップされるので、テーブル名の単数形を名前に付けることで自動的にテーブルとマッピングされる
+  - ちなみに、テーブル名とモデル名を対応させなくても、以下のように$tableプロパティで対応するテーブルを指定することが可能である
+    ```
+    protected $table = 'fruits';
+    ```
+
+### 5. シーダーファイルを作成する（※任意）
+■ シーダーファイル作成
+  - シーダファイルは以下のコマンドで作成可能
+    ```
+    php artisan make:seeder NamesTableSeeder
+    ```
+  - 作成したシーダーファイルは「database/seeds」ディレクトリ直下に作成される
+  - シーダーファイルの「runメソッド」内に登録する処理を記載する
+  - 以下はサンプルのメソッド
+    ```
+    public function run()
+    {
+        // テーブルのクリア
+        DB::table('persons')->truncate();
+    
+        // 初期データ用意（列名をキーとする連想配列）
+        $books = [
+            ['name' => 'sample_user_01',
+             'email' => 'test1@mail.co.jp',
+             'birth_dt' => '1950/04/01'],
+            ['name' => 'sample_user_02',
+             'email' => 'test2@mail.co.jp',
+             'birth_dt' => '1951/04/01'],
+            ['name' => 'sample_user_03',
+             'email' => 'test3@mail.co.jp',
+             'birth_dt' => '1952/04/01']
+        ];
+    
+        // 登録
+        foreach($books as $book) {
+          \App\Book::create($book);
+        }
+    }
+    ```
+■ シーダーファイル実行
+  - シーダーファイルは以下のコマンドで実行する
+    ```
+    php artisan db:seed
+    ```
+
+### 6. ルーティングの設定を行う
+  - ルーティングの情報は「routes/web.php」に記載する
+  - デフォルトではルートディレクトアクセス時のルーティング処理が記載されている
+    ```
+    Route::get('/', function () {
+        return view('welcome');
+    });
+    ```
+  - 以下のようにartisanコマンドでサーバーを立ち上げ、
+    「http://localhost:8000/」にアクセスしてみるとwelcome.blade.phpの内容が表示される
+    ```
+    php artisan serve --port=8000
+    ```
+  - ルートパラメータ「」
+
+### 7. 
