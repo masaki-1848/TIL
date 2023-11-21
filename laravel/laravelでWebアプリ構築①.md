@@ -129,6 +129,11 @@ composer create-project laravel/laravel sample_app
         $this->call(PersonsTableSeeder::class);
     }
     ```
+  - DBを操作する方法は、①DBファサード、②クエリビルダ、③EloquentORMの３通りある
+  - 以下はDBファサードを使用する場合に、クラスの冒頭にuseでファサードを呼び出す必要がある
+    ```
+    use Illuminate\Support\Facades\DB;
+    ```
 ■ シーダーファイル実行
   - シーダーファイルは以下のコマンドで実行する
     ```
