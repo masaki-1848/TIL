@@ -140,6 +140,45 @@ composer create-project laravel/laravel sample_app
     ```
     php artisan serve --port=8000
     ```
-  - ルートパラメータ「」
+  - ルートパラメータについて、例えば以下のように記載した場合、
+    「localhost:8000/book/1」にGETリクエストがきたら、BookControllerのshowメソッドに処理を振り分けて」という意味になる
+    ```
+    Route::get('book/{id}', 'BookController@show');
+    ```
+    BookControllerではshowメソッドに引数を持たせるようにする
+    ```
+    public function show($id)
+    {
+        return view('book', ['book' => Book::findOrFail($id)]);
+    }
+    ```
 
-### 7. 
+### 7. コントローラーの作成
+  - コントローラーはルーティングされてきたリクエストを受け取り、レスポンスを作成する
+  - コントローラーを作成する際は以下のコマンドを実行する
+    ```
+    php artisan make:controller ControllerName
+    ```
+  - コントローラーは「app/Http/Controllers」ディレクトリに作成される
+  - ビューを表示するファンクション「public function index(){}」を定義する
+  - コントローラのメソッドでビューを返したい場合はview()関数を使用する
+  - view()関数は第1引数に表示したいビューの名称、第2引数にビューに渡したい値を設定する
+  - compact関数は簡単に連想配列を渡すことができる。
+    ```
+    compact('book')　は　['book' => $book]　と同じ
+    ```
+
+### 8. ビューの作成
+  - ビューは「resources/views」ディレクトリ直下に作成する
+  - 名称は「view_name.blade.php」とする　（※１）
+  - Larabelではビューの作成に「blade」というテンプレートエンジンを用いている
+  - bladeでは{{ $variable }}と記述すると、コントローラから受け取った値を画面に出力できる
+  - また、@foreach($array as $element)や@if($bool)とすることで制御構文を使用することもできる
+  - 制御構文の終端は@endforeach、@endifと記述する
+    ※bladeのマニュアルは以下を参照
+    ```
+    https://readouble.com/laravel/5.7/ja/blade.html
+    ```
+  - 作成後にartisanコマンドでサーバーを立ち上げて画面を確認する
+
+### 9. 
