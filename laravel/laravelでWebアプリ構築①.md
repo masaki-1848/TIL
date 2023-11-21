@@ -121,6 +121,14 @@ composer create-project laravel/laravel sample_app
         }
     }
     ```
+  - また、DatabaseSeeder.phpに作成したSeederクラスが読み込まれるようにrun()メソッドに追加する
+    ```
+    public function run()
+    {
+        // PersonsTableSeederを読み込むように指定する
+        $this->call(PersonsTableSeeder::class);
+    }
+    ```
 ■ シーダーファイル実行
   - シーダーファイルは以下のコマンドで実行する
     ```
