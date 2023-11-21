@@ -103,7 +103,7 @@ composer create-project laravel/laravel sample_app
         DB::table('persons')->truncate();
     
         // 初期データ用意（列名をキーとする連想配列）
-        $books = [
+        $persons = [
             ['name' => 'sample_user_01',
              'email' => 'test1@mail.co.jp',
              'birth_dt' => '1950/04/01'],
