@@ -121,7 +121,7 @@
        Conditionタグで、githubのリポジトリおよびその特定ブランチを指定する記法を取っているが、
        リポジトリを"StringEquals"で完全一致で指定してしまうと、なぜかうまくいかない。
        ⇒　StringEqualsではなくStringLikeで「repo:<GitHubユーザー名>/<GitHubリポジトリ名>:*」のようにLike検索で指定しなければうまくいかない。
-     - 
+  
   - [次へ]をクリックする
   - [ポリシーを許可]からgithub actionsから呼び出すAWSサービスの実行権限を持たせるポリシーを追加し、「次へ」をクリックする
     - AmazonElasticContainerRegistryPublicFullAccess
