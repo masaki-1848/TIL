@@ -121,6 +121,7 @@
     - AmazonElasticContainerRegistryPublicFullAccess
     - AmazonECSTaskExecutionRolePolicy
     - AmazonS3ReadOnlyAccess
+    - AmazonEC2ContainerRegistryPowerUser
   - [ロール名]に「githubActionsExeRole」を入力する
   - [説明]に「This role is execution admin for deployment ecr triggered by github actions.」を入力する
   - [ロールを作成]をクリックする
