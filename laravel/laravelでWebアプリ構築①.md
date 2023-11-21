@@ -86,6 +86,8 @@ composer create-project laravel/laravel sample_app
     ```
     protected $table = 'fruits';
     ```
+  - 上記はモデルファイル内で必ず定義しないと後述するシーダーの実行や、
+    DBの操作をする際にエラーになる（テーブル名が見つからない）
 
 ### 5. シーダーファイルを作成する（※任意）
 ■ シーダーファイル作成
