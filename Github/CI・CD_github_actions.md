@@ -116,10 +116,17 @@
           ]
       }
      ```
+     ■ ポイント
+     - 上記では、sts:AssumeRoleWithWebIdentityにて、AWS Security Token Service（STS）に対してassumeRole（ロールを借り受ける）際に、
+       Conditionタグで、githubのリポジトリおよびその特定ブランチを指定する記法を取っているが、
+       リポジトリを"StringEquals"で完全一致で指定してしまうと、なぜかうまくいかない。
+       ⇒　StringEqualsではなくStringLikeで「repo:<GitHubユーザー名>/<GitHubリポジトリ名>:*」のようにLike検索で指定しなければうまくいかない。
+     - 
   - [次へ]をクリックする
   - [ポリシーを許可]からgithub actionsから呼び出すAWSサービスの実行権限を持たせるポリシーを追加し、「次へ」をクリックする
     - AmazonElasticContainerRegistryPublicFullAccess
-    - AmazonECSTaskExecutionRolePolicy
+    - AmazonECS_FullAccess(※)
+      ※fullaccess権限を持たせないと、「ecs:RegisterTaskDefinition」タスク定義の上書き登録処理で権限エラーになり、落ちる
     - AmazonS3ReadOnlyAccess
     - AmazonEC2ContainerRegistryPowerUser
   - [ロール名]に「githubActionsExeRole」を入力する
@@ -346,12 +353,12 @@
          8. [作成]をクリックする
 
   8. GitHubリポジトリのプロジェクトルートディレクトリに、taskdef.jsonファイルを追加する
-     7-1. [手順6.]で作成したタスク定義を開き、JSONタブを選択する
-     7-2. [JSON]の全文をコピーする
-     7-3. エディター等で新規ファイルを作成し、7-2でコピーした内容を張り付ける
+     8-1. [手順6.]で作成したタスク定義を開き、JSONタブを選択する
+     8-2. [JSON]の全文をコピーする
+     8-3. エディター等で新規ファイルを作成し、7-2でコピーした内容を張り付ける
           ※最下行の”tags:[]”は削除する
-     7-4. 名称を「taskdef.json」として保存する
-     7-5. ビルドしたイメージを動的にタスク定義に紐づけるため、imageに環境変数を指定する
+     8-4. 名称を「taskdef.json」として保存する
+     8-5. ビルドしたイメージを動的にタスク定義に紐づけるため、imageに環境変数を指定する
 
   9. 試しにgit pushしてみる
      - 
