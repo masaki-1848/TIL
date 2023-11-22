@@ -200,6 +200,11 @@ composer create-project laravel/laravel sample_app
     ```
     php artisan make:controller ControllerName
     ```
+  - ちなみに下記のコマンドでコントローラーを作成すると、簡単にCRUDなどのメソッド(※)を立ち上げてくれる
+    ```
+    php artisan make:controller ExampleController --resource
+    ```
+    ※index、create、store、show、edit、update、destroy
   - コントローラーは「app/Http/Controllers」ディレクトリに作成される
   - ビューを表示するファンクション「public function index(){}」を定義する
   - コントローラのメソッドでビューを返したい場合はview()関数を使用する
