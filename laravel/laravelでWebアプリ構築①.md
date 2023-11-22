@@ -158,7 +158,11 @@ composer create-project laravel/laravel sample_app
   - ルートパラメータについて、例えば以下のように記載した場合、
     「localhost:8000/book/1」にGETリクエストがきたら、BookControllerのshowメソッドに処理を振り分けて」という意味になる
     ```
+    ■ Laravel8まで
     Route::get('book/{id}', 'BookController@show');
+    ■ Laravel9以降
+    use App\Http\Controllers\BookController;
+    Route::get('book/{id}', [BookController::class, "index"]);
     ```
     BookControllerではshowメソッドに引数を持たせるようにする
     ```
@@ -167,6 +171,10 @@ composer create-project laravel/laravel sample_app
         return view('book', ['book' => Book::findOrFail($id)]);
     }
     ```
+    ※上記の場合、ルーティングのパスに{id}を付与しているため、ポストパラメータとしてコントローラー側で受け取ることができる
+    　フォームでPOSTするデータを受け取る場合は、functionの引数にpublic function show(Request $request){}のようにIllumintate\Http\Requestクラス
+      を用いてリクエスト変数を取得して、$request->input("id")でPOSTパラメータを取得するか、
+      Request::input("id", default_value);などのように直接Requestクラスのinput()メソッドを呼び出して取得する
 
 ### 7. コントローラーの作成
   - コントローラーはルーティングされてきたリクエストを受け取り、レスポンスを作成する
