@@ -136,6 +136,24 @@ composer create-project laravel/laravel sample_app
     ```
     use Illuminate\Support\Facades\DB;
     ```
+  - EloquentORMを使用する場合は、初めにuseでModelを呼び出しておく必要がある
+    ```
+    use App\Models\Person
+    ・
+    ・
+    ・
+    /**
+     * トップ画面表示
+     */
+    public function index()
+    {
+        // Personsテーブルの一覧を取得
+        $persons = Person::get();
+        // Personのビューを表示する
+        return view("person", compact("persons"));
+    }
+    
+    ```
 ■ シーダーファイル実行
   - シーダーファイルは以下のコマンドで実行する
     ```
