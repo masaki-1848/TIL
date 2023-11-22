@@ -227,4 +227,27 @@ composer create-project laravel/laravel sample_app
     ```
   - 作成後にartisanコマンドでサーバーを立ち上げて画面を確認する
 
-### 9. 
+### 9. 削除、更新機能の作成
+  - 手順8で作成したviewに削除と更新機能を付ける
+  - フォームタグでボタン設置行の利用者を削除する機能（delete）を以下の例を参考に作成
+    ```
+    <form action="/person/delete" method="post">
+      @method("DELETE")
+      @csrf
+      <input type="hidden" name="id" value="{{ $person->id }}">
+      <button type="submit" class="btn btn-xs btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash"></span></button>
+    </form>
+    ```
+    - @method("DELETE")：HTTPのリクエスト方式（get、post、putなど）
+    - @csrf：Bladeの標準ディレクティブであり、CSRF対策として、トークンのタグをhidden属性で埋め込むことができる
+  - DBの削除、更新等のロジックを実装する場合、リターンでview()メソッドを返してしまうとURLが変わってしまうので、
+    web.phpでindex()メソッドに定義しているルーティング名を呼び出すようにリダイレクトさせる
+    ```
+    [ web.php ]
+    Route::get('person', [ExampleController::class, "index"])->name('examples.index');
+    
+    [ ExampleController.php ]
+    return redirect()->route('examples.index');
+    ```
+
+### 10. 
